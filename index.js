@@ -1,15 +1,16 @@
 const token = process.env["TOKEN"];
-const { Client, Events, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, Events, GatewayIntentBits, Collection, ChannelType, EmbedBuilder, messageLink } = require("discord.js");
 
 // Importação dos comandos
 const fs = require("node:fs");
+const { type } = require("node:os");
 const path = require("node:path");
 const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs
     .readdirSync(commandsPath)
     .filter((file) => file.endsWith(".js"));
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages, GatewayIntentBits.MessageContent] });
 client.commands = new Collection();
 
 for (const file of commandFiles) {
@@ -30,18 +31,4 @@ client.once(Events.ClientReady, (c) => {
 });
 client.login(token);
 
-// Listener de interações com o bot
-client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-    const command = interaction.client.commands.get(interaction.commandName)
-    if (!command) {
-        console.error("Comando não encontrado")
-        return
-    }
-    try {
-        await command.executionAsyncResource(interaction)
-    } catch (error) {
-        console.error(error)
-        await interaction.reply("Houve um erro ao executar o comando")
-    }
-});
+require('./listeners')(client)

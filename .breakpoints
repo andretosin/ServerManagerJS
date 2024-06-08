@@ -1,0 +1,12 @@
+{
+  "files": {
+    "listeners/messageCreate.js": [
+      {
+        "id": "7030ddde-dc89-4b9a-85a2-d3deb0406768",
+        "line": 29,
+        "version": 170,
+        "index": 1144
+      }
+    ]
+  }
+}
